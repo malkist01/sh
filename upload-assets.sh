@@ -4,12 +4,29 @@ tag="$1"
 repo_dir="$2"
 artifacts_dir="$3"
 
-cd $artifacts_dir
+# ===== Set timezone =====
+export TZ=Asia/Jakarta;
 
-CAPTION="Compile Complete, Have A Brick Day"
+# ===== TELEGRAM CONFIG =====
 BOT_TOKEN="7868194496:AAGY7WwRRbeCOPYOnczoCPh2psC43Q0F3JI"
 CHAT_ID="-1002287610863"
+API_URL="https://api.telegram.org/bot${BOT_TOKEN}"
 
+tg_msg() {
+curl -s -X POST "${API_URL}/sendMessage" \
+-d chat_id="${CHAT_ID}" \
+-d text="$1" \
+-d parse_mode=HTML > /dev/null
+}
+
+tg_file() {
+curl -s -X POST "${API_URL}/sendDocument" \
+-F chat_id="${CHAT_ID}" \
+-F document=@"$1" \
+-F caption="$2" > /dev/null
+}
+
+cd $artifacts_dir
 for kernel in *; do
     if [ -d "$kernel" ]; then
        escaped_kernel=$(printf '%q' "$kernel")
@@ -21,8 +38,6 @@ for kernel in *; do
        cd $repo_dir
        gh release upload "$tag" "$artifacts_dir/$escaped_kernel/$escaped_kernel.zip"
        echo "--- $escaped_kernel uploaded ---"
-       URL="https://api.telegram.org/bot$BOT_TOKEN/sendDocument"
-       curl -s -X POST "$URL" -F document=@"$escaped_kernel.zip" -F caption="$CAPTION" -F chat_id="$CHAT_ID"
        cd $artifacts_dir
        rm -rf $kernel
        echo "--- Cleaned up $kernel ---"
