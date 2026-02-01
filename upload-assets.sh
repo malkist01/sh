@@ -16,6 +16,8 @@ for kernel in *; do
        cd $repo_dir
        gh release upload "$tag" "$artifacts_dir/$escaped_kernel/$escaped_kernel.zip"
        echo "--- $escaped_kernel uploaded ---"
+       URL="https://api.telegram.org/bot$BOT_TOKEN/sendDocument"
+       curl -s -X POST "$URL" -F document=@"$escaped_kernel" -F caption="$CAPTION" -F chat_id="$CHAT_ID"
        cd $artifacts_dir
        rm -rf $kernel
        echo "--- Cleaned up $kernel ---"
