@@ -4,6 +4,10 @@ tag="$1"
 repo_dir="$2"
 artifacts_dir="$3"
 
+CAPTION="Compile Complete, Have A Brick Day"
+BOT_TOKEN="7868194496:AAGY7WwRRbeCOPYOnczoCPh2psC43Q0F3JI"
+CHAT_ID="-1002287610863"
+
 cd $artifacts_dir
 for kernel in *; do
     if [ -d "$kernel" ]; then
